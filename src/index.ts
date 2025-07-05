@@ -1,5 +1,3 @@
 export { GitHubSpreadsheetEditor } from './components/GitHubSpreadsheetEditor'
-export type { GitHubSpreadsheetEditorProps } from './types'
-export { useGitHubAuth } from './hooks/useGitHubAuth'
-export { useGitHubFile } from './hooks/useGitHubFile'
-export { usePullRequest } from './hooks/usePullRequest'
+export { GitHubAuthProvider } from './components/GitHubAuthProvider'
+export type { GitHubSpreadsheetEditorProps, AuthState } from './types'

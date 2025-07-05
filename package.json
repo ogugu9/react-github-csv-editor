@@ -33,6 +33,7 @@
   "dependencies": {
     "@octokit/oauth-app": "^7.1.6",
     "@octokit/rest": "^21.1.1",
+    "react-oauth2-code-pkce": "github:soofstad/react-oauth2-pkce#af2e0ea1010688e08db7131fc0e1fbdf60dba747",
     "react-spreadsheet": "^0.10.1"
   },
   "devDependencies": {

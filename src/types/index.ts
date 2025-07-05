@@ -4,10 +4,6 @@ export interface GitHubSpreadsheetEditorProps {
   path: string
   baseBranch?: string
   newBranchPrefix?: string
-  /** OAuth Web フロー用設定 */
-  clientId: string
-  scope?: string
-  redirectUri?: string
   readOnly?: boolean
   sheetOptions?: Partial<any>
   onAuthSuccess?: (token: string) => void

@@ -1,7 +1,7 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useContext } from 'react'
 import Spreadsheet from 'react-spreadsheet'
+import { AuthContext, type IAuthContext } from 'react-oauth2-code-pkce/src'
 import { GitHubSpreadsheetEditorProps } from '../types'
-import { useGitHubAuth } from '../hooks/useGitHubAuth'
 import { useGitHubFile } from '../hooks/useGitHubFile'
 import { usePullRequest } from '../hooks/usePullRequest'
 
@@ -11,32 +11,21 @@ export const GitHubSpreadsheetEditor: React.FC<GitHubSpreadsheetEditorProps> = (
   path,
   baseBranch = 'main',
   newBranchPrefix = 'spreadsheet-edit',
-  clientId,
-  scope = 'repo',
-  redirectUri,
   readOnly = false,
   sheetOptions = {},
-  onAuthSuccess,
-  onAuthError,
   onSubmit,
   onError,
   renderLoading,
   renderError
 }) => {
-  const auth = useGitHubAuth({
-    clientId,
-    scope,
-    redirectUri,
-    onAuthSuccess,
-    onAuthError
-  })
+  const { token, logIn, logOut, error: authError, loginInProgress }: IAuthContext = useContext(AuthContext)
 
   const file = useGitHubFile({
     owner,
     repo,
     path,
     branch: baseBranch,
-    token: auth.token
+    token: token
   })
 
   const pr = usePullRequest({
@@ -45,7 +34,7 @@ export const GitHubSpreadsheetEditor: React.FC<GitHubSpreadsheetEditorProps> = (
     path,
     baseBranch,
     newBranchPrefix,
-    token: auth.token,
+    token: token,
     onSubmit,
     onError
   })
@@ -73,7 +62,7 @@ export const GitHubSpreadsheetEditor: React.FC<GitHubSpreadsheetEditorProps> = (
     await pr.createPullRequest(file.content, commitMessage, prTitle, prBody)
   }
 
-  if (auth.loading || file.loading) {
+  if (loginInProgress || file.loading) {
     if (renderLoading) {
       return <>{renderLoading()}</>
     }
@@ -84,25 +73,26 @@ export const GitHubSpreadsheetEditor: React.FC<GitHubSpreadsheetEditorProps> = (
     )
   }
 
-  const error = auth.error || file.error || pr.error
+  const error = authError || file.error || pr.error
   if (error) {
+    const errorObj = typeof error === 'string' ? new Error(error) : error
     if (renderError) {
-      return <>{renderError(error)}</>
+      return <>{renderError(errorObj)}</>
     }
     return (
       <div style={{ padding: '20px', color: 'red' }}>
-        <div>Error: {error.message}</div>
+        <div>Error: {errorObj.message}</div>
       </div>
     )
   }
 
-  if (!auth.isAuthenticated) {
+  if (!token) {
     return (
       <div style={{ padding: '20px', textAlign: 'center' }}>
         <h3>GitHub Authentication Required</h3>
         <p>Please authenticate with GitHub to access the repository.</p>
         <button
-          onClick={auth.login}
+          onClick={() => logIn()}
           style={{
             padding: '10px 20px',
             backgroundColor: '#24292e',
@@ -127,7 +117,7 @@ export const GitHubSpreadsheetEditor: React.FC<GitHubSpreadsheetEditorProps> = (
             {owner}/{repo} - {path}
           </h3>
           <p style={{ margin: '5px 0', color: '#666', fontSize: '14px' }}>
-            Authenticated as {auth.user?.login}
+            Authenticated with GitHub
           </p>
         </div>
         <div>
@@ -150,7 +140,7 @@ export const GitHubSpreadsheetEditor: React.FC<GitHubSpreadsheetEditorProps> = (
             </button>
           )}
           <button
-            onClick={auth.logout}
+            onClick={() => logOut()}
             style={{
               padding: '8px 16px',
               backgroundColor: '#6c757d',

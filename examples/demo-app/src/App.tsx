@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { GitHubSpreadsheetEditor } from 'github-spreadsheet-editor'
+import { GitHubSpreadsheetEditor, GitHubAuthProvider } from 'github-spreadsheet-editor'
 import './App.css'
 
 function App() {
@@ -78,35 +78,42 @@ function App() {
       </div>
 
       <div style={{ border: '1px solid #ddd', borderRadius: '8px', overflow: 'hidden' }}>
-        <GitHubSpreadsheetEditor
-          owner={owner}
-          repo={repo}
-          path={path}
-          clientId={clientId || 'demo-client-id'}
-          onAuthSuccess={(token: string) => {
-            console.log('Authentication successful:', token)
-          }}
-          onAuthError={(error: Error) => {
-            console.error('Authentication error:', error)
-          }}
-          onSubmit={(prUrl: string) => {
-            console.log('Pull request created:', prUrl)
-            alert(`Pull request created successfully!\n${prUrl}`)
-          }}
-          onError={(error: Error) => {
-            console.error('Component error:', error)
-          }}
-          renderLoading={() => (
-            <div style={{ padding: '40px', textAlign: 'center' }}>
-              <div style={{ fontSize: '18px', color: '#666' }}>Loading...</div>
-            </div>
-          )}
-          renderError={(error: Error) => (
-            <div style={{ padding: '20px', color: '#d73a49', backgroundColor: '#ffeef0', border: '1px solid #fdb8c0', borderRadius: '6px' }}>
-              <strong>Error:</strong> {error.message}
-            </div>
-          )}
-        />
+        {clientId ? (
+          <GitHubAuthProvider clientId={clientId}>
+            <GitHubSpreadsheetEditor
+              owner={owner}
+              repo={repo}
+              path={path}
+              onAuthSuccess={(token: string) => {
+                console.log('Authentication successful:', token)
+              }}
+              onAuthError={(error: Error) => {
+                console.error('Authentication error:', error)
+              }}
+              onSubmit={(prUrl: string) => {
+                console.log('Pull request created:', prUrl)
+                alert(`Pull request created successfully!\n${prUrl}`)
+              }}
+              onError={(error: Error) => {
+                console.error('Component error:', error)
+              }}
+              renderLoading={() => (
+                <div style={{ padding: '40px', textAlign: 'center' }}>
+                  <div style={{ fontSize: '18px', color: '#666' }}>Loading...</div>
+                </div>
+              )}
+              renderError={(error: Error) => (
+                <div style={{ padding: '20px', color: '#d73a49', backgroundColor: '#ffeef0', border: '1px solid #fdb8c0', borderRadius: '6px' }}>
+                  <strong>Error:</strong> {error.message}
+                </div>
+              )}
+            />
+          </GitHubAuthProvider>
+        ) : (
+          <div style={{ padding: '40px', textAlign: 'center', color: '#666' }}>
+            Please provide a GitHub OAuth Client ID to test the component.
+          </div>
+        )}
       </div>
 
       <footer style={{ marginTop: '30px', textAlign: 'center', color: '#666', fontSize: '14px' }}>
