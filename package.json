@@ -1,0 +1,56 @@
+{
+  "name": "github-spreadsheet-editor",
+  "version": "1.0.0",
+  "description": "React component for editing CSV/TSV files on GitHub with OAuth authentication and PR creation",
+  "main": "dist/github-spreadsheet-editor.umd.js",
+  "module": "dist/github-spreadsheet-editor.es.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "react",
+    "github",
+    "spreadsheet",
+    "csv",
+    "tsv",
+    "oauth",
+    "pull-request",
+    "component"
+  ],
+  "author": "ogugu9",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0"
+  },
+  "dependencies": {
+    "@octokit/oauth-app": "^7.1.6",
+    "@octokit/rest": "^21.1.1",
+    "react-spreadsheet": "^0.10.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.10",
+    "@types/react": "^19.1.8",
+    "@types/react-dom": "^19.1.6",
+    "@vitejs/plugin-react": "^4.6.0",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ogugu9/github-spreadsheet-editor.git"
+  },
+  "homepage": "https://github.com/ogugu9/github-spreadsheet-editor#readme",
+  "bugs": {
+    "url": "https://github.com/ogugu9/github-spreadsheet-editor/issues"
+  }
+}
